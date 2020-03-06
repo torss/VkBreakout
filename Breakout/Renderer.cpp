@@ -427,20 +427,20 @@ namespace Renderer
 		uint32_t end = 0;
 		uint32_t begin = 0;
 
-		static int total_sample_count = 0;
+		static int totalSampleCount = 0;
 		static int count = 0;
 		static float totalTime = 0.0f;
-		constexpr int count_max = 60;
+		constexpr int countMax = 60;
 
-		++total_sample_count;
-		if (++count >= count_max)
+		++totalSampleCount;
+		if (++count >= countMax)
 		{
 			printf("VK Render Time (avg of past %i frames): %f ms\n", count, totalTime / (float)count);
 			count = 0;
 			totalTime = 0;
 		}
 		float timestampPeriod = GContext.gpu.deviceProps.limits.timestampPeriod;
-		if (total_sample_count == 1)
+		if (totalSampleCount == 1)
 			printf("timestampPeriod: %f ns\n", timestampPeriod);
 
 
