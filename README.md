@@ -6,6 +6,7 @@ This fork implements some smaller changes in the `master` branch:
 - Fixes the `timestampPeriod` bug _(see <https://github.com/khalladay/VkBreakout/issues/1#issue-474554203>)_.
 - Cycles through brick colors _(just to show that the data is actually being updated)_.
 - Adds a minimal Python plot generator script for the results _(`plot/plot.py`)_.
+- Persistent samples _(currently serialized to `local/results[DLM-...].ubjson`)_.
 
 Current `torss`-fork results _(`master` branch)_:
 
