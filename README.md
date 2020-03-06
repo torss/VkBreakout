@@ -12,6 +12,8 @@ Current `torss`-fork results _(`master` branch)_:
 
 <div align="center">
   <img width="512" src="https://raw.githubusercontent.com/torss/VkBreakout/master/plot/plot.svg?sanitize=true" alt="VkBreakout 'torss'-fork result plot" />
+</div>
+<div align="center">
   DLM & SF stand for the DEVICE_LOCAL_MEMORY & SKIP_FRAMES options.
 </div>
 
