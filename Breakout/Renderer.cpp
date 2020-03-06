@@ -429,9 +429,9 @@ namespace Renderer
 			uint32_t end = 0;
 		};
 		TimestampResultSet timestampResultSet;
-		std::array<uint32_t, 2> timestampResultArray; // 0: begin-timestamp, 1: end-timestamp
-		uint32_t end = 0;
-		uint32_t begin = 0;
+		// std::array<uint32_t, 2> timestampResultArray; // 0: begin-timestamp, 1: end-timestamp
+		// uint32_t end = 0;
+		// uint32_t begin = 0;
 
 		static int totalSampleCount = 0;
 		static int count = 0;
@@ -450,15 +450,15 @@ namespace Renderer
 			printf("timestampPeriod: %f ns\n", timestampPeriod);
 
 
-		vkGetQueryPoolResults(GContext.lDevice.device, appRenderData.queryPool, 1, 1, sizeof(uint32_t), &end, 0, VK_QUERY_RESULT_WAIT_BIT);
-		vkGetQueryPoolResults(GContext.lDevice.device, appRenderData.queryPool, 0, 1, sizeof(uint32_t), &begin, 0, VK_QUERY_RESULT_WAIT_BIT);
-		vkGetQueryPoolResults(GContext.lDevice.device, appRenderData.queryPool, 0, 2, sizeof(uint32_t) * 2, timestampResultArray.data(), sizeof(uint32_t), VK_QUERY_RESULT_WAIT_BIT);
+		// vkGetQueryPoolResults(GContext.lDevice.device, appRenderData.queryPool, 1, 1, sizeof(uint32_t), &end, 0, VK_QUERY_RESULT_WAIT_BIT);
+		// vkGetQueryPoolResults(GContext.lDevice.device, appRenderData.queryPool, 0, 1, sizeof(uint32_t), &begin, 0, VK_QUERY_RESULT_WAIT_BIT);
+		// vkGetQueryPoolResults(GContext.lDevice.device, appRenderData.queryPool, 0, 2, sizeof(uint32_t) * 2, timestampResultArray.data(), sizeof(uint32_t), VK_QUERY_RESULT_WAIT_BIT);
 		vkGetQueryPoolResults(GContext.lDevice.device, appRenderData.queryPool, 0, 2, sizeof(TimestampResultSet), &timestampResultSet, offsetof(TimestampResultSet, end), VK_QUERY_RESULT_WAIT_BIT);
-		if (timestampResultArray[0] != begin || timestampResultArray[1] != end)
-			printf("timestampResultArray broken: %u %u != %u %u\n", begin, end, timestampResultArray[0], timestampResultArray[1]);
-		if (timestampResultSet.begin != begin || timestampResultSet.end != end)
-			printf("timestampResultSet broken: %u %u != %u %u\n", begin, end, timestampResultSet.begin, timestampResultSet.end);
-		float diff = timestampPeriod * (end - begin);
+		// if (timestampResultArray[0] != begin || timestampResultArray[1] != end)
+		// 	printf("timestampResultArray broken: %u %u != %u %u\n", begin, end, timestampResultArray[0], timestampResultArray[1]);
+		// if (timestampResultSet.begin != begin || timestampResultSet.end != end)
+		// 	printf("timestampResultSet broken: %u %u != %u %u\n", begin, end, timestampResultSet.begin, timestampResultSet.end);
+		float diff = timestampPeriod * (timestampResultSet.end - timestampResultSet.begin);
 		totalTime += (diff) / (float)1e6;
 #endif
 
