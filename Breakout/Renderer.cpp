@@ -427,21 +427,26 @@ namespace Renderer
 		uint32_t end = 0;
 		uint32_t begin = 0;
 
+		static int total_sample_count = 0;
 		static int count = 0;
 		static float totalTime = 0.0f;
+		constexpr int count_max = 60;
 
-		if (count++ > 4999)
+		++total_sample_count;
+		if (++count >= count_max)
 		{
-			printf("VK Render Time (avg of past 5000 frames): %f ms\n", totalTime / 5000.0f);
+			printf("VK Render Time (avg of past %i frames): %f ms\n", count, totalTime / (float)count);
 			count = 0;
 			totalTime = 0;
 		}
-		float timestampFrequency = GContext.gpu.deviceProps.limits.timestampPeriod;
+		float timestampPeriod = GContext.gpu.deviceProps.limits.timestampPeriod;
+		if (total_sample_count == 1)
+			printf("timestampPeriod: %f ns\n", timestampPeriod);
 
 
 		vkGetQueryPoolResults(GContext.lDevice.device, appRenderData.queryPool, 1, 1, sizeof(uint32_t), &end, 0, VK_QUERY_RESULT_WAIT_BIT);
 		vkGetQueryPoolResults(GContext.lDevice.device, appRenderData.queryPool, 0, 1, sizeof(uint32_t), &begin, 0, VK_QUERY_RESULT_WAIT_BIT);
-		uint32_t diff = end - begin;
+		float diff = timestampPeriod * (end - begin);
 		totalTime += (diff) / (float)1e6;
 #endif
 
