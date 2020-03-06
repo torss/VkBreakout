@@ -127,7 +127,18 @@ namespace Breakout
 		return distanceSquared < (state.ballRad * state.ballRad);
 	}
 
-
+#if STRESS_TEST
+	void tick(float deltaTime) {
+		// Cycle through brick colors
+		static uint32_t tickCount = 0;
+		for (uint32_t i = 0; i < (uint32_t)state.numBricks; ++i) {
+			int b = state.brickPrimHdls[i];
+			uint32_t j = i + tickCount;
+			setPrimCol(b, glm::vec4(0.5f + (j % 25) / 50.f, 1.f, 0.5f + (j % 10) / 40.f, 1.f));
+		}
+		++tickCount;
+	}
+#else
 	void tick(float deltaTime)
 	{
 		float aspect = (float)getScreenW() / (float)getScreenH();
@@ -215,6 +226,7 @@ namespace Breakout
 		state.paddlePos.x = clamp(state.paddlePos.x, -screenWOrtho + state.paddleScale.x, screenWOrtho - state.paddleScale.x);
 		setPrimPos(state.paddlePrimHdl, state.paddlePos);
 	}
+#endif
 
 	void draw()
 	{
