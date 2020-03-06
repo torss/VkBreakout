@@ -2,6 +2,9 @@
 #include "Mesh.h"
 #include "os_support.h"
 
+#include <nlohmann/json.hpp>
+#include <fstream>
+
 using namespace Primitive;
 using namespace vkh;
 
@@ -429,12 +432,26 @@ namespace Renderer
 			uint32_t end = 0;
 		};
 
-		constexpr int sampleCountMax = 6000;
+		constexpr int sampleCountReportThreshold = 600;
+		constexpr const char* resultFilePath = DEVICE_LOCAL_MEMORY ? "../local/results[DLM-1].ubjson" : "../local/results[DLM-0].ubjson";
 		static int frameCount = 0;
-		static float sampleSum = 0.0f;
+		static float sampleSum = 0.f;
 		static std::vector<float> samples;
 
 		float timestampPeriod = GContext.gpu.deviceProps.limits.timestampPeriod;
+
+		if (frameCount == 0) {
+			printf("\nVK timestamp benchmark settings\n  timestampPeriod: %f ns\n  DEVICE_LOCAL_MEMORY: %u\n\n", timestampPeriod, DEVICE_LOCAL_MEMORY);
+
+			std::ifstream ifs(resultFilePath, std::ios::binary);
+			if (ifs.good()) {
+				nlohmann::json json = nlohmann::json::from_ubjson(ifs);
+				samples = json.get<std::vector<float>>();
+				for (float&sample : samples)
+					sampleSum += sample;
+				printf("Loaded %u samples from file.\n", (unsigned int)samples.size());
+			}
+		}
 
 		TimestampResultSet timestampResultSet;
 		vkGetQueryPoolResults(GContext.lDevice.device, appRenderData.queryPool, 0, 2, sizeof(TimestampResultSet), &timestampResultSet, offsetof(TimestampResultSet, end), VK_QUERY_RESULT_WAIT_BIT);
@@ -444,7 +461,7 @@ namespace Renderer
 		sampleSum += diff_ms;
 
 		++frameCount;
-		if (samples.size() >= sampleCountMax) {
+		if (samples.size() % sampleCountReportThreshold == 0) {
 			float sampleMean = sampleSum / (float)samples.size();
 			float correctedSampleStandardDeviation = 0.f;
 			{
@@ -456,14 +473,21 @@ namespace Renderer
 				correctedSampleStandardDeviation /= (float)(samples.size() - 1);
 				correctedSampleStandardDeviation = std::sqrt(correctedSampleStandardDeviation);
 			}
-			printf("VK render time results\n  Samples: %u\n  Mean: %f ms\n  StdDev: %f ms\n  Sum: %f ms\n  DEVICE_LOCAL_MEMORY: %u\n\n",
-				(unsigned int)samples.size(), sampleMean, correctedSampleStandardDeviation, sampleSum, DEVICE_LOCAL_MEMORY);
-			samples.clear();
-			sampleSum = 0;
-		}
+			printf("VK timestamp benchmark results\n  Samples: %u\n  Mean: %f ms\n  StdDev: %f ms\n  Sum: %f ms\n\n",
+				(unsigned int)samples.size(), sampleMean, correctedSampleStandardDeviation, sampleSum);
 
-		if (frameCount == 1)
-			printf("timestampPeriod: %f ns\n\n", timestampPeriod);
+			std::ofstream ofs(resultFilePath, std::ios::binary);
+			if (ofs.good()) {
+				nlohmann::json json = samples;
+				std::vector<uint8_t> data = nlohmann::json::to_ubjson(json);
+				ofs.write((const char *)data.data(), data.size());
+			} else {
+				printf("Failed to write samples to file!\n");
+			}
+
+			// samples.clear();
+			// sampleSum = 0;
+		}
 #endif
 
 	}
