@@ -2,18 +2,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 device_name = 'RX480'
+sample_title = '10k'
 data = [
     {
         'name': 'DEVICE_LOCAL_MEMORY 1',
-        'mean': 0.632939,
-        'stddev': 0.085272,
-        'samples': 6000,
+        'mean': 0.508311,
+        'stddev': 0.017079,
+        'samples': 10000,
     },
     {
         'name': 'DEVICE_LOCAL_MEMORY 0',
-        'mean': 0.623012,
-        'stddev': 0.085789,
-        'samples': 6000,
+        'mean': 0.512627,
+        'stddev': 0.045577,
+        'samples': 10000,
     }
 ]
 
@@ -28,7 +29,8 @@ ax.bar(x_pos, means, yerr=errors, align='center', alpha=0.5, ecolor='black',
 ax.set_ylabel('ms')
 ax.set_xticks(x_pos)
 ax.set_xticklabels(names)
-ax.set_title('Vulkan Breakout Timestamp Benchmark - {}'.format(device_name))
+ax.set_title('Vulkan Breakout Timestamp Benchmark - {} - {} samples'
+             .format(device_name, sample_title))
 ax.yaxis.grid(True)
 
 plt.tight_layout()
