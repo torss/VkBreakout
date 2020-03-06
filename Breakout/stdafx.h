@@ -9,6 +9,8 @@
 #define SCREEN_W 1280
 #define SCREEN_H 720
 
+#define ENABLE_OS_FRAME_TIME 0
+
 #define STRESS_TEST 1
 #if STRESS_TEST
 #define MAX_PRIMS 5060

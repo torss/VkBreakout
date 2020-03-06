@@ -23,13 +23,16 @@ void mainLoop()
 {
 	bool running = true;
 
+#if ENABLE_OS_FRAME_TIME
 	double lastFrame = OS::getMilliseconds();
 
 	double fpsAccum = 0.0;
 	int count = 0;
+#endif
 
 	while (running)
 	{
+#if ENABLE_OS_FRAME_TIME
 		double thisFrameTime = OS::getMilliseconds();
 		double deltaTime = (thisFrameTime - lastFrame);
 		lastFrame = thisFrameTime;
@@ -41,6 +44,7 @@ void mainLoop()
 			count = 0;
 			fpsAccum = 0;
 		}
+#endif
 
 		OS::handleOSEvents();
 
