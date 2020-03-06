@@ -4,6 +4,7 @@
 
 #include <nlohmann/json.hpp>
 #include <fstream>
+#include <sstream>
 
 using namespace Primitive;
 using namespace vkh;
@@ -340,7 +341,7 @@ namespace Renderer
 		copyRegion.size = dynamicAlignment * primMeshes.size();
 
 #if DEVICE_LOCAL_MEMORY
-		vkCmdCopyBuffer(GContext.commandBuffers[imageIndex], appRenderData.stagingBuffer, appRenderData.uniformBuffer, 1, &copyRegion);
+		if (activeFrame) vkCmdCopyBuffer(GContext.commandBuffers[imageIndex], appRenderData.stagingBuffer, appRenderData.uniformBuffer, 1, &copyRegion);
 #endif
 
 #if ENABLE_VK_TIMESTAMP
@@ -433,7 +434,7 @@ namespace Renderer
 		};
 
 		constexpr int sampleCountReportThreshold = 1000;
-		constexpr const char* resultFilePath = DEVICE_LOCAL_MEMORY ? "../local/results[DLM-1].ubjson" : "../local/results[DLM-0].ubjson";
+		static std::string resultFilePath;
 		static int frameCount = 0;
 		static float sampleSum = 0.f;
 		static std::vector<float> samples;
@@ -441,7 +442,14 @@ namespace Renderer
 		float timestampPeriod = GContext.gpu.deviceProps.limits.timestampPeriod;
 
 		if (frameCount == 0) {
-			printf("\nVK timestamp benchmark settings\n  timestampPeriod: %f ns\n  DEVICE_LOCAL_MEMORY: %u\n\n", timestampPeriod, DEVICE_LOCAL_MEMORY);
+			{
+				std::stringstream strstr;
+				strstr << "../local/results[DLM-" << DEVICE_LOCAL_MEMORY << "][SF-" << SKIP_FRAMES << "].ubjson";
+				resultFilePath = strstr.str();
+			}
+
+			printf("\nVK timestamp benchmark settings\n  timestampPeriod: %f ns\n  DEVICE_LOCAL_MEMORY: %u\n  SKIP_FRAMES: %u\n\n",
+				timestampPeriod, DEVICE_LOCAL_MEMORY, SKIP_FRAMES);
 
 			std::ifstream ifs(resultFilePath, std::ios::binary);
 			if (ifs.good()) {

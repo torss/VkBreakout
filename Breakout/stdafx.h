@@ -10,6 +10,7 @@
 #define SCREEN_H 720
 
 #define ENABLE_OS_FRAME_TIME 0
+#define ENABLE_VK_TIMESTAMP 1
 
 #define STRESS_TEST 1
 #if STRESS_TEST
@@ -18,5 +19,9 @@
 #define MAX_PRIMS 500
 #endif
 
-#define ENABLE_VK_TIMESTAMP 1
-#define DEVICE_LOCAL_MEMORY 1
+// Benchmark options
+#define DEVICE_LOCAL_MEMORY 0
+#define SKIP_FRAMES 1000
+
+// Global variables
+extern bool activeFrame;

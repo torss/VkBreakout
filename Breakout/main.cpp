@@ -5,6 +5,8 @@
 #include "Renderer.h"
 #include "BreakoutGame.h"
 
+bool activeFrame = true;
+
 void mainLoop();
 
 int CALLBACK WinMain(HINSTANCE Instance, HINSTANCE pInstance, LPSTR cmdLine, int showCode)
@@ -30,8 +32,12 @@ void mainLoop()
 	int count = 0;
 #endif
 
+	uint32_t frameCount = 0;
+
 	while (running)
 	{
+		activeFrame = 0 == (frameCount % (SKIP_FRAMES + 1));
+
 #if ENABLE_OS_FRAME_TIME
 		double thisFrameTime = OS::getMilliseconds();
 		double deltaTime = (thisFrameTime - lastFrame);
@@ -65,5 +71,7 @@ void mainLoop()
 #endif 
 
 		Breakout::draw();
+		
+		++frameCount;
 	}
 }

@@ -41,24 +41,30 @@ namespace Primitive
 		size_t dynamicAlignment = (sizeof(PrimitiveUniformObject) / uboAlignment) * uboAlignment + ((sizeof(PrimitiveUniformObject) % uboAlignment) > 0 ? uboAlignment : 0);
 
 		std::vector<int> meshes;
+		meshes.reserve(primitiveState.primitives.size());
 
-		int idx = 0;
-		char* uniformChar = (char*)Renderer::mapBufferPtr(MAX_PRIMS);
+		if (activeFrame) {
+			int idx = 0;
+			char* uniformChar = (char*)Renderer::mapBufferPtr(MAX_PRIMS);
 
-		for (const auto& prim : primitiveState.primitives)
-		{
-			PrimitiveUniformObject puo;
-			puo.model = Renderer::appRenderData.VIEW_PROJECTION * (glm::translate(prim.second.pos) * glm::scale(prim.second.scale));
-			puo.color = prim.second.col;
+			for (const auto& prim : primitiveState.primitives)
+			{
+				PrimitiveUniformObject puo;
+				puo.model = Renderer::appRenderData.VIEW_PROJECTION * (glm::translate(prim.second.pos) * glm::scale(prim.second.scale));
+				puo.color = prim.second.col;
 
-			memcpy(&uniformChar[idx * dynamicAlignment], &puo, sizeof(PrimitiveUniformObject));
-			idx++;
+				memcpy(&uniformChar[idx * dynamicAlignment], &puo, sizeof(PrimitiveUniformObject));
+				idx++;
 
-			meshes.push_back(prim.second.meshId);
+				meshes.push_back(prim.second.meshId);
+			}
+		
+			//comment this out to test keeping the buffer always mapped.
+			Renderer::unmapBufferPtr();
+		} else {
+			for (const auto& prim : primitiveState.primitives)
+				meshes.push_back(prim.second.meshId);
 		}
-	
-		//comment this out to test keeping the buffer always mapped.
-		Renderer::unmapBufferPtr();
 
 		Renderer::draw(primitiveState.uniformData, meshes);
 
