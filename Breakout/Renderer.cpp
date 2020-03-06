@@ -432,7 +432,7 @@ namespace Renderer
 			uint32_t end = 0;
 		};
 
-		constexpr int sampleCountReportThreshold = 600;
+		constexpr int sampleCountReportThreshold = 1000;
 		constexpr const char* resultFilePath = DEVICE_LOCAL_MEMORY ? "../local/results[DLM-1].ubjson" : "../local/results[DLM-0].ubjson";
 		static int frameCount = 0;
 		static float sampleSum = 0.f;
