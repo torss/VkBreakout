@@ -428,38 +428,42 @@ namespace Renderer
 			uint32_t begin = 0;
 			uint32_t end = 0;
 		};
-		TimestampResultSet timestampResultSet;
-		// std::array<uint32_t, 2> timestampResultArray; // 0: begin-timestamp, 1: end-timestamp
-		// uint32_t end = 0;
-		// uint32_t begin = 0;
 
-		static int totalSampleCount = 0;
-		static int count = 0;
-		static float totalTime = 0.0f;
-		constexpr int countMax = 60;
+		constexpr int sampleCountMax = 6000;
+		static int frameCount = 0;
+		static float sampleSum = 0.0f;
+		static std::vector<float> samples;
 
-		++totalSampleCount;
-		if (++count >= countMax)
-		{
-			printf("VK Render Time (avg of past %i frames): %f ms\n", count, totalTime / (float)count);
-			count = 0;
-			totalTime = 0;
-		}
 		float timestampPeriod = GContext.gpu.deviceProps.limits.timestampPeriod;
-		if (totalSampleCount == 1)
-			printf("timestampPeriod: %f ns\n", timestampPeriod);
 
-
-		// vkGetQueryPoolResults(GContext.lDevice.device, appRenderData.queryPool, 1, 1, sizeof(uint32_t), &end, 0, VK_QUERY_RESULT_WAIT_BIT);
-		// vkGetQueryPoolResults(GContext.lDevice.device, appRenderData.queryPool, 0, 1, sizeof(uint32_t), &begin, 0, VK_QUERY_RESULT_WAIT_BIT);
-		// vkGetQueryPoolResults(GContext.lDevice.device, appRenderData.queryPool, 0, 2, sizeof(uint32_t) * 2, timestampResultArray.data(), sizeof(uint32_t), VK_QUERY_RESULT_WAIT_BIT);
+		TimestampResultSet timestampResultSet;
 		vkGetQueryPoolResults(GContext.lDevice.device, appRenderData.queryPool, 0, 2, sizeof(TimestampResultSet), &timestampResultSet, offsetof(TimestampResultSet, end), VK_QUERY_RESULT_WAIT_BIT);
-		// if (timestampResultArray[0] != begin || timestampResultArray[1] != end)
-		// 	printf("timestampResultArray broken: %u %u != %u %u\n", begin, end, timestampResultArray[0], timestampResultArray[1]);
-		// if (timestampResultSet.begin != begin || timestampResultSet.end != end)
-		// 	printf("timestampResultSet broken: %u %u != %u %u\n", begin, end, timestampResultSet.begin, timestampResultSet.end);
 		float diff = timestampPeriod * (timestampResultSet.end - timestampResultSet.begin);
-		totalTime += (diff) / (float)1e6;
+		float diff_ms = diff / 1e6f;
+		samples.push_back(diff_ms);
+		sampleSum += diff_ms;
+
+		++frameCount;
+		if (samples.size() >= sampleCountMax) {
+			float sampleMean = sampleSum / (float)samples.size();
+			float correctedSampleStandardDeviation = 0.f;
+			{
+				// Compute the correctedSampleStandardDeviation
+				for (float&sample : samples) {
+					float diff = sample - sampleMean;
+					correctedSampleStandardDeviation += diff * diff;
+				}
+				correctedSampleStandardDeviation /= (float)(samples.size() - 1);
+				correctedSampleStandardDeviation = std::sqrt(correctedSampleStandardDeviation);
+			}
+			printf("\nVK render time results\n  Samples: %u\n  Mean: %f ms\n  StdDev: %f ms\n  Sum: %f ms\n  DEVICE_LOCAL_MEMORY: %u\n",
+				(unsigned int)samples.size(), sampleMean, correctedSampleStandardDeviation, sampleSum, DEVICE_LOCAL_MEMORY);
+			samples.clear();
+			sampleSum = 0;
+		}
+
+		if (frameCount == 1)
+			printf("timestampPeriod: %f ns\n", timestampPeriod);
 #endif
 
 	}
