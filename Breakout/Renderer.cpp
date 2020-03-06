@@ -456,14 +456,14 @@ namespace Renderer
 				correctedSampleStandardDeviation /= (float)(samples.size() - 1);
 				correctedSampleStandardDeviation = std::sqrt(correctedSampleStandardDeviation);
 			}
-			printf("\nVK render time results\n  Samples: %u\n  Mean: %f ms\n  StdDev: %f ms\n  Sum: %f ms\n  DEVICE_LOCAL_MEMORY: %u\n",
+			printf("VK render time results\n  Samples: %u\n  Mean: %f ms\n  StdDev: %f ms\n  Sum: %f ms\n  DEVICE_LOCAL_MEMORY: %u\n\n",
 				(unsigned int)samples.size(), sampleMean, correctedSampleStandardDeviation, sampleSum, DEVICE_LOCAL_MEMORY);
 			samples.clear();
 			sampleSum = 0;
 		}
 
 		if (frameCount == 1)
-			printf("timestampPeriod: %f ns\n", timestampPeriod);
+			printf("timestampPeriod: %f ns\n\n", timestampPeriod);
 #endif
 
 	}
