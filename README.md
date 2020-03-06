@@ -14,7 +14,7 @@ Current `torss`-fork results _(`master` branch)_:
   <img width="512" src="https://raw.githubusercontent.com/torss/VkBreakout/master/plot/plot.svg?sanitize=true" alt="VkBreakout 'torss'-fork result plot" />
 </div>
 <div align="center">
-  DLM & SF stand for the `DEVICE_LOCAL_MEMORY` & `SKIP_FRAMES` options.
+  DLM & SF stand for the DEVICE_LOCAL_MEMORY & SKIP_FRAMES options.
 </div>
 
 I.e. nothing interesting to report so far, since there is no substantial performance difference between `#define DEVICE_LOCAL_MEMORY 0` and `1` _(this setting resides in `Breakout/stdafx.h`; the Vulkan benchmark result code is at the bottom of `Breakout/Renderer.cpp`)_.
