@@ -60,7 +60,7 @@ ax.bar(x_pos, means, yerr=errors, align='center', alpha=0.5, ecolor='black',
 ax.set_ylabel('ms')
 ax.set_xticks(x_pos)
 ax.set_xticklabels(names)
-ax.set_title('Vulkan Breakout Timestamp Benchmark - {} - {} samples'
+ax.set_title('Vulkan Breakout Timestamp Benchmark - {} - {} samples each'
              .format(device_name, sample_title))
 ax.yaxis.grid(True)
 
