@@ -13,16 +13,18 @@
 #define ENABLE_VK_TIMESTAMP 1
 
 #define STRESS_TEST 1
-#if STRESS_TEST
-#define MAX_PRIMS 5060
-#else
-#define MAX_PRIMS 500
+#if !STRESS_TEST
+#define BRICK_COUNT 500
 #endif
 
 // Benchmark options
-#define PERSIST_SAMPLES 0
-#define DEVICE_LOCAL_MEMORY 1
-#define SKIP_FRAMES 3
+#define BRICK_COUNT 50000 // 5060
+#define PERSIST_SAMPLES 1
+#define DEVICE_LOCAL_MEMORY 0
+#define SKIP_FRAMES 10
+
+// Alias
+#define MAX_PRIMS BRICK_COUNT
 
 // Global variables
 extern bool activeFrame;

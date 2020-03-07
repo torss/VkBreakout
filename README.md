@@ -6,7 +6,7 @@ This fork implements some smaller changes in the `master` branch:
 - Fixes the `timestampPeriod` bug _(see <https://github.com/khalladay/VkBreakout/issues/1#issue-474554203>)_.
 - Cycles through brick colors _(just to show that the data is actually being updated)_.
 - Adds a minimal Python plot generator script for the results _(`plot/plot.py`)_.
-- Persistent samples _(currently serialized to `local/results[DLM-...][SF-...].ubjson`)_.
+- Persistent samples _(currently serialized to `local/results[DLM-...][SF-...][BC-...].ubjson`)_.
 - Adds a `SKIP_FRAMES` test option, which however didn't change the results.
 
 Current `torss`-fork results _(`master` branch)_:
@@ -18,8 +18,8 @@ Current `torss`-fork results _(`master` branch)_:
   DLM & SF stand for the DEVICE_LOCAL_MEMORY & SKIP_FRAMES options.
 </div>
 
-I.e. nothing interesting to report so far, since there is no substantial performance difference between `#define DEVICE_LOCAL_MEMORY 0` and `1`, nor did the introduced `SKIP_FRAMES` change that.
-`DEVICE_LOCAL_MEMORY` & `SKIP_FRAMES` reside in `Breakout/stdafx.h`, the Vulkan benchmark result code can be found at the bottom of `Breakout/Renderer.cpp`.
+I.e. nothing interesting to report so far, since there is no substantial performance difference between `#define DEVICE_LOCAL_MEMORY 0` and `1` - the introduced `SKIP_FRAMES` or an increased `BRICK_COUNT` _(not in the current plot)_ didn't change that.
+`DEVICE_LOCAL_MEMORY`, `SKIP_FRAMES` and `BRICK_COUNT` reside in `Breakout/stdafx.h`, the Vulkan benchmark result code can be found at the bottom of `Breakout/Renderer.cpp`.
 
 ## Original repository README.md content
 

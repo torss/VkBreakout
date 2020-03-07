@@ -48,6 +48,24 @@ data = [
     }
 ]
 
+# 50k test
+# data = [
+#     {
+#         'name': 'DLM 1, SF 1k, BC50k',
+#         'mean': 4.792333,
+#         'stddev': 0.162395,
+#         'samples': 5000,
+#         'color': 'xkcd:yellow',
+#     },
+#     {
+#         'name': 'DLM 0, SF 1k, BC50k',
+#         'mean': 4.927636,
+#         'stddev': 0.170930,
+#         'samples': 5000,
+#         'color': 'xkcd:yellow',
+#     }
+# ]
+
 names = list(map(lambda x: x['name'], data))
 x_pos = np.arange(len(names))
 means = list(map(lambda x: x['mean'], data))

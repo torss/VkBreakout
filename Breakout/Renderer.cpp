@@ -94,7 +94,7 @@ namespace Renderer
 		size_t dynamicAlignment = (sizeof(Primitive::PrimitiveUniformObject) / uboAlignment) * uboAlignment + ((sizeof(Primitive::PrimitiveUniformObject) % uboAlignment) > 0 ? uboAlignment : 0);
 	
 		
-		VkDeviceSize bufferSize = dynamicAlignment * 6000;
+		VkDeviceSize bufferSize = dynamicAlignment * MAX_PRIMS;
 
 #if DEVICE_LOCAL_MEMORY
 		CreateBuffer(rs.stagingBuffer,
@@ -447,13 +447,13 @@ namespace Renderer
 #if PERSIST_SAMPLES
 			{
 				std::stringstream strstr;
-				strstr << "../local/results[DLM-" << DEVICE_LOCAL_MEMORY << "][SF-" << SKIP_FRAMES << "].ubjson";
+				strstr << "../local/results[DLM-" << DEVICE_LOCAL_MEMORY << "][SF-" << SKIP_FRAMES << "][BC-" << BRICK_COUNT << "].ubjson";
 				resultFilePath = strstr.str();
 			}
 #endif
 
-			printf("\nVK timestamp benchmark settings\n  timestampPeriod: %f ns\n  DEVICE_LOCAL_MEMORY: %u\n  SKIP_FRAMES: %u\n\n",
-				timestampPeriod, DEVICE_LOCAL_MEMORY, SKIP_FRAMES);
+			printf("\nVK timestamp benchmark settings\n  timestampPeriod: %f ns\n  DEVICE_LOCAL_MEMORY: %u\n  SKIP_FRAMES: %u\n  BRICK_COUNT: %u\n\n",
+				timestampPeriod, DEVICE_LOCAL_MEMORY, SKIP_FRAMES, BRICK_COUNT);
 
 #if PERSIST_SAMPLES
 			std::ifstream ifs(resultFilePath, std::ios::binary);
