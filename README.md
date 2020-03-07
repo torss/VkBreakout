@@ -7,6 +7,7 @@ This fork implements some smaller changes in the `master` branch:
 - Cycles through brick colors _(just to show that the data is actually being updated)_.
 - Adds a minimal Python plot generator script for the results _(`plot/plot.py`)_.
 - Persistent samples _(currently serialized to `local/results[DLM-...][SF-...].ubjson`)_.
+- Adds a `SKIP_FRAMES` test option, which however didn't change the results.
 
 Current `torss`-fork results _(`master` branch)_:
 
