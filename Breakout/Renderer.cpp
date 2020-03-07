@@ -434,7 +434,9 @@ namespace Renderer
 		};
 
 		constexpr int sampleCountReportThreshold = 1000;
+#if PERSIST_SAMPLES
 		static std::string resultFilePath;
+#endif
 		static int frameCount = 0;
 		static float sampleSum = 0.f;
 		static std::vector<float> samples;
@@ -442,15 +444,18 @@ namespace Renderer
 		float timestampPeriod = GContext.gpu.deviceProps.limits.timestampPeriod;
 
 		if (frameCount == 0) {
+#if PERSIST_SAMPLES
 			{
 				std::stringstream strstr;
 				strstr << "../local/results[DLM-" << DEVICE_LOCAL_MEMORY << "][SF-" << SKIP_FRAMES << "].ubjson";
 				resultFilePath = strstr.str();
 			}
+#endif
 
 			printf("\nVK timestamp benchmark settings\n  timestampPeriod: %f ns\n  DEVICE_LOCAL_MEMORY: %u\n  SKIP_FRAMES: %u\n\n",
 				timestampPeriod, DEVICE_LOCAL_MEMORY, SKIP_FRAMES);
 
+#if PERSIST_SAMPLES
 			std::ifstream ifs(resultFilePath, std::ios::binary);
 			if (ifs.good()) {
 				nlohmann::json json = nlohmann::json::from_ubjson(ifs);
@@ -459,6 +464,7 @@ namespace Renderer
 					sampleSum += sample;
 				printf("Loaded %u samples from file.\n", (unsigned int)samples.size());
 			}
+#endif
 		}
 
 		TimestampResultSet timestampResultSet;
@@ -484,6 +490,7 @@ namespace Renderer
 			printf("VK timestamp benchmark results\n  Samples: %u\n  Mean: %f ms\n  StdDev: %f ms\n  Sum: %f ms\n\n",
 				(unsigned int)samples.size(), sampleMean, correctedSampleStandardDeviation, sampleSum);
 
+#if PERSIST_SAMPLES
 			std::ofstream ofs(resultFilePath, std::ios::binary);
 			if (ofs.good()) {
 				nlohmann::json json = samples;
@@ -492,6 +499,7 @@ namespace Renderer
 			} else {
 				printf("Failed to write samples to file!\n");
 			}
+#endif
 
 			// samples.clear();
 			// sampleSum = 0;

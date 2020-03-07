@@ -20,8 +20,9 @@
 #endif
 
 // Benchmark options
-#define DEVICE_LOCAL_MEMORY 0
-#define SKIP_FRAMES 1000
+#define PERSIST_SAMPLES 0
+#define DEVICE_LOCAL_MEMORY 1
+#define SKIP_FRAMES 3
 
 // Global variables
 extern bool activeFrame;
